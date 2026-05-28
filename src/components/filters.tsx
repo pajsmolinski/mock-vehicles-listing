@@ -6,9 +6,13 @@ import {
 } from "@heroicons/react/16/solid";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { fetchVehicles } from "../services/vehicles";
+import type { FilterParams } from "../services/vehicles";
 
-export const Filters = () => {
+interface FiltersProps {
+  onFiltersChange: (filters: FilterParams) => void;
+}
+
+export const Filters = ({ onFiltersChange }: FiltersProps) => {
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
@@ -16,22 +20,22 @@ export const Filters = () => {
   const [fuelType, setFuelType] = useState("All");
   const [vehicleType, setVehicleType] = useState("All");
 
+  useEffect(() => {
+    const filters: FilterParams = {
+      search: debouncedSearchQuery || undefined,
+      color: color !== "All" ? color : undefined,
+      fuel: fuelType !== "All" ? fuelType : undefined,
+      type: vehicleType !== "All" ? vehicleType : undefined,
+    };
+    onFiltersChange(filters);
+  }, [debouncedSearchQuery, color, fuelType, vehicleType, onFiltersChange]);
+
   const handleClearAll = () => {
     setSearchQuery("");
     setColor("All");
     setFuelType("All");
     setVehicleType("All");
   };
-
-  useEffect(() => {
-    fetchVehicles()
-      .then((data) => {
-        console.log("Fetched vehicles:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching vehicles:", error);
-      });
-  }, [debouncedSearchQuery, color, fuelType, vehicleType]);
 
   return (
     <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-4 w-full space-y-4">

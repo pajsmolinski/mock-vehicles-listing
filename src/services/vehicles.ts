@@ -53,7 +53,7 @@ export async function fetchVehicles(
   });
 
   if (filters) {
-    if (filters.search) params.append("search", filters.search);
+    if (filters.search) params.append("globalSearch", filters.search);
     if (filters.color && filters.color !== "All")
       params.append("color", filters.color);
     if (filters.fuel && filters.fuel !== "All")
