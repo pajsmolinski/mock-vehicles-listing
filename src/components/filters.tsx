@@ -4,11 +4,14 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "@heroicons/react/16/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
+import { fetchVehicles } from "../services/vehicles";
 
 export const Filters = () => {
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const [color, setColor] = useState("All");
   const [fuelType, setFuelType] = useState("All");
   const [vehicleType, setVehicleType] = useState("All");
@@ -19,6 +22,16 @@ export const Filters = () => {
     setFuelType("All");
     setVehicleType("All");
   };
+
+  useEffect(() => {
+    fetchVehicles()
+      .then((data) => {
+        console.log("Fetched vehicles:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching vehicles:", error);
+      });
+  }, [debouncedSearchQuery, color, fuelType, vehicleType]);
 
   return (
     <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-4 w-full space-y-4">
@@ -90,7 +103,9 @@ export const Filters = () => {
               <option>Sedan</option>
               <option>SUV</option>
               <option>Hatchback</option>
+              <option>Wagon</option>
               <option>Coupe</option>
+              <option>Van</option>
             </select>
           </div>
         </div>
