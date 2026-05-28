@@ -4,6 +4,17 @@ import { VehiclesList } from "../vehicles-list";
 import * as vehiclesService from "../../services/vehicles";
 import "@testing-library/jest-dom";
 
+// Mock Next.js navigation
+const mockReplace = jest.fn();
+const mockSearchParams = new URLSearchParams();
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    replace: mockReplace,
+  }),
+  useSearchParams: () => mockSearchParams,
+}));
+
 // Mock the fetchVehicles function
 jest.mock("../../services/vehicles", () => ({
   fetchVehicles: jest.fn(),

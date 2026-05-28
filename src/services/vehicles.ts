@@ -46,13 +46,9 @@ export async function fetchVehicles(
   page: number = 1,
   limit: number = 5,
 ): Promise<ApiResponse<Vehicle[]>> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
+  const params = new URLSearchParams();
 
   if (filters) {
-    // params.append("searchMode", "AND");
     if (filters.search) params.append("globalSearch", filters.search);
     if (filters.color && filters.color !== "All")
       params.append("color", filters.color);
@@ -60,7 +56,14 @@ export async function fetchVehicles(
       params.append("fuel", filters.fuel);
     if (filters.type && filters.type !== "All")
       params.append("type", filters.type);
+
+    if (Array.from(params.keys()).length > 1) {
+      params.append("searchMode", "AND");
+    }
   }
+
+  params.append("page", page.toString());
+  params.append("limit", limit.toString());
 
   if (sort) {
     const [sortField, sortOrder] = sort.split("_");

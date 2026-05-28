@@ -4,15 +4,24 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { VehiclesList } from "@/src/components/vehicles-list";
-import { fetchVehicles } from "@/src/services/vehicles";
+import { fetchVehicles, type FilterParams } from "@/src/services/vehicles";
+import { readUrlState, SearchParams } from "../services/urlParams";
 
-export default async function Home() {
+interface HomeProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
   const queryClient = new QueryClient();
+  const params = await searchParams;
 
-  // Prefetch the initial data on the server
+  // Parse filters from URL
+  const { filters, sort, page } = readUrlState(params);
+
+  // Prefetch the initial data on the server with URL params
   await queryClient.prefetchQuery({
-    queryKey: ["vehicles", {}, undefined, 1],
-    queryFn: () => fetchVehicles({}, undefined, 1),
+    queryKey: ["vehicles", filters, sort, page],
+    queryFn: () => fetchVehicles(filters, sort, page),
   });
 
   return (

@@ -11,15 +11,16 @@ import type { FilterParams } from "../services/vehicles";
 
 interface FiltersProps {
   onFiltersChange: (filters: FilterParams) => void;
+  initialFilters?: FilterParams;
 }
 
-export const Filters = ({ onFiltersChange }: FiltersProps) => {
+export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialFilters?.search || "");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
-  const [color, setColor] = useState("All");
-  const [fuelType, setFuelType] = useState("All");
-  const [vehicleType, setVehicleType] = useState("All");
+  const [color, setColor] = useState(initialFilters?.color || "All");
+  const [fuelType, setFuelType] = useState(initialFilters?.fuel || "All");
+  const [vehicleType, setVehicleType] = useState(initialFilters?.type || "All");
 
   useEffect(() => {
     const filters: FilterParams = {

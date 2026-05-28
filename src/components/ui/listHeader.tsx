@@ -13,12 +13,10 @@ export const ListHeader: React.FC<ListHeaderProps> = ({
 }) => {
   return (
     <div className="flex items-center justify-between mb-4 w-full">
-      {total > 0 && (
-        <div>
-          <span className="text-blue-500 font-semibold">{total}</span> vehicles
-          found
-        </div>
-      )}
+      <div>
+        <span className="text-blue-500 font-semibold">{total}</span> vehicles
+        found
+      </div>
       <div className="flex items-center space-x-4">
         <div>Sort by</div>
         <div className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white grid shrink-0 grid-cols-1 focus-within:relative">

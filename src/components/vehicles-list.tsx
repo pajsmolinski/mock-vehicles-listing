@@ -1,25 +1,44 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { Filters } from "@/src/components/filters";
 import { ListHeader } from "@/src/components/ui/listHeader";
 import { ListContainer } from "@/src/components/ui/listContainer";
 import { ListItem } from "@/src/components/ui/listItem";
 import { fetchVehicles, type FilterParams } from "@/src/services/vehicles";
 import { Pagination } from "./pagination";
+import { updateUrlState } from "../services/urlParams";
 
 const ITEMS_PER_PAGE = 10;
 
 export function VehiclesList() {
-  const [filters, setFilters] = useState<FilterParams>({});
-  const [sort, setSort] = useState<string>();
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleFiltersChange = (newFilters: FilterParams) => {
+  const [filters, setFilters] = useState<FilterParams>(() => ({
+    search: searchParams.get("search") || undefined,
+    color: searchParams.get("color") || undefined,
+    fuel: searchParams.get("fuel") || undefined,
+    type: searchParams.get("type") || undefined,
+  }));
+  const [sort, setSort] = useState<string | undefined>(
+    searchParams.get("sort") || undefined,
+  );
+  const [page, setPage] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
+
+  useEffect(() => {
+    const newUrl = updateUrlState(filters, sort, page);
+    router.replace(newUrl, { scroll: false });
+  }, [filters, sort, page, router]);
+
+  const handleFiltersChange = useCallback((newFilters: FilterParams) => {
     setFilters(newFilters);
     setPage(1);
-  };
+  }, []);
 
   const { data, isError, error, isFetching } = useQuery({
     queryKey: ["vehicles", filters, sort, page],
@@ -29,7 +48,10 @@ export function VehiclesList() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans">
       <main className="flex flex-1 w-full max-w-5xl flex-col items-center pt-32 pb-12 px-1 sm:items-start space-y-4">
-        <Filters onFiltersChange={handleFiltersChange} />
+        <Filters
+          onFiltersChange={handleFiltersChange}
+          initialFilters={filters}
+        />
         <ListHeader
           total={data?.meta?.total || 0}
           sortBy={sort}
