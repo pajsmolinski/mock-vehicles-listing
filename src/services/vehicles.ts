@@ -24,8 +24,6 @@ export interface ApiResponse<T> {
   meta: {
     total: number;
     page: number;
-    limit: number;
-    totalPages: number;
   };
 }
 
@@ -44,6 +42,7 @@ export class ApiError extends Error {
 
 export async function fetchVehicles(
   filters?: FilterParams,
+  sort?: string,
   page: number = 1,
   limit: number = 5,
 ): Promise<ApiResponse<Vehicle[]>> {
@@ -60,6 +59,12 @@ export async function fetchVehicles(
       params.append("fuel", filters.fuel);
     if (filters.type && filters.type !== "All")
       params.append("type", filters.type);
+  }
+
+  if (sort) {
+    const [sortField, sortOrder] = sort.split("_");
+    params.append("sortBy", sortField);
+    params.append("sortOrder", sortOrder);
   }
 
   try {

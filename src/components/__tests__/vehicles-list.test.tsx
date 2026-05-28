@@ -33,6 +33,19 @@ jest.mock("../ui/listItem", () => ({
   ListItem: ({ item }: any) => <div data-testid="list-item">{item.make}</div>,
 }));
 
+jest.mock("../pagination", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Pagination: ({ currentPage, totalPages, onPageChange }: any) => (
+    <div data-testid="pagination">
+      <button onClick={() => onPageChange(currentPage - 1)}>Previous</button>
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
+      <button onClick={() => onPageChange(currentPage + 1)}>Next</button>
+    </div>
+  ),
+}));
+
 const mockVehiclesResponse = {
   status: "success",
   code: 200,
@@ -121,7 +134,12 @@ describe("VehiclesList", () => {
     renderWithQueryClient(<VehiclesList />);
 
     await waitFor(() => {
-      expect(vehiclesService.fetchVehicles).toHaveBeenCalledWith({}, 1);
+      expect(vehiclesService.fetchVehicles).toHaveBeenCalledWith(
+        {},
+        undefined,
+        1,
+        10,
+      );
     });
   });
 
@@ -147,8 +165,7 @@ describe("VehiclesList", () => {
     renderWithQueryClient(<VehiclesList />);
 
     await waitFor(() => {
-      expect(screen.queryByText("Previous")).not.toBeInTheDocument();
-      expect(screen.queryByText("Next")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("pagination")).not.toBeInTheDocument();
     });
   });
 
@@ -156,9 +173,9 @@ describe("VehiclesList", () => {
     const multiPageResponse = {
       ...mockVehiclesResponse,
       meta: {
-        total: 20,
+        total: 40,
         page: 1,
-        limit: 5,
+        limit: 10,
         totalPages: 4,
       },
     };
@@ -170,6 +187,7 @@ describe("VehiclesList", () => {
     renderWithQueryClient(<VehiclesList />);
 
     await waitFor(() => {
+      expect(screen.getByTestId("pagination")).toBeInTheDocument();
       expect(screen.getByText("Previous")).toBeInTheDocument();
       expect(screen.getByText("Next")).toBeInTheDocument();
       expect(screen.getByText("Page 1 of 4")).toBeInTheDocument();

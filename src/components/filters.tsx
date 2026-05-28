@@ -3,6 +3,7 @@ import {
   AdjustmentsHorizontalIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/16/solid";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -13,7 +14,7 @@ interface FiltersProps {
 }
 
 export const Filters = ({ onFiltersChange }: FiltersProps) => {
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const [color, setColor] = useState("All");
@@ -40,13 +41,16 @@ export const Filters = ({ onFiltersChange }: FiltersProps) => {
   return (
     <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-4 w-full space-y-4">
       <div className="flex space-x-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 p-2 rounded-lg bg-slate-950 border-slate-800 border text-white focus:outline-none"
-        />
+        <div className="flex flex-1 p-2 rounded-lg bg-slate-950 border-slate-800 border items-center">
+          <MagnifyingGlassIcon className="w-6 h-6 inline-block mr-1 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Search by make, model, VIN, type..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 text-white focus:outline-none"
+          />
+        </div>
         <button
           className="p-2 px-4 rounded-lg bg-slate-700 cursor-pointer flex items-center"
           onClick={() => setFiltersOpen(!filtersOpen)}
@@ -67,7 +71,7 @@ export const Filters = ({ onFiltersChange }: FiltersProps) => {
         </button>
       </div>
       {filtersOpen && (
-        <div className="p-2 rounded-lg bg-slate-950 border-slate-800 border text-white flex">
+        <div className="p-4 rounded-lg bg-slate-950 border-slate-800 border text-white flex">
           <div className="flex-1 flex flex-col space-y-2">
             <label className="text-sm">Color</label>
             <select

@@ -65,7 +65,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({}, 2, 10);
+      await fetchVehicles({}, undefined, 2, 10);
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).toContain("page=2");

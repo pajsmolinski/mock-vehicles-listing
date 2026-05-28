@@ -18,7 +18,14 @@ describe("Filters", () => {
   it("should render all filter inputs", () => {
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
 
-    expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Search by make, model, VIN, type..."),
+    ).toBeInTheDocument();
+
+    // Open filters to see the labels
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
+
     expect(screen.getByText("Color")).toBeInTheDocument();
     expect(screen.getByText("Fuel Type")).toBeInTheDocument();
     expect(screen.getByText("Vehicle Type")).toBeInTheDocument();
@@ -29,14 +36,14 @@ describe("Filters", () => {
 
     const filterButton = screen.getByText("Filters");
 
-    // Initially filters should be visible
-    expect(screen.getByText("Color")).toBeInTheDocument();
+    // Initially filters should be closed
+    expect(screen.queryAllByRole("combobox").length).toBe(0);
 
     fireEvent.click(filterButton);
 
-    // After closing, the dropdown options should not be in the document
-    const colorSelects = screen.queryAllByRole("combobox");
-    expect(colorSelects.length).toBe(0);
+    // After opening, should show filter controls
+    expect(screen.getByText("Color")).toBeInTheDocument();
+    expect(screen.queryAllByRole("combobox").length).toBeGreaterThan(0);
   });
 
   it("should call onFiltersChange with debounced search query", async () => {
@@ -44,7 +51,9 @@ describe("Filters", () => {
 
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
 
-    const searchInput = screen.getByPlaceholderText("Search...");
+    const searchInput = screen.getByPlaceholderText(
+      "Search by make, model, VIN, type...",
+    );
 
     // Initial render will call with empty filters
     expect(mockOnFiltersChange).toHaveBeenCalledTimes(1);
@@ -75,6 +84,10 @@ describe("Filters", () => {
   it("should call onFiltersChange when color is changed", async () => {
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
 
+    // Open filters first
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
+
     const colorSelect = screen.getAllByRole("combobox")[0];
 
     fireEvent.change(colorSelect, { target: { value: "Blue" } });
@@ -91,6 +104,10 @@ describe("Filters", () => {
   it("should call onFiltersChange when fuel type is changed", async () => {
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
 
+    // Open filters first
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
+
     const fuelSelect = screen.getAllByRole("combobox")[1];
 
     fireEvent.change(fuelSelect, { target: { value: "Electric" } });
@@ -106,6 +123,10 @@ describe("Filters", () => {
 
   it("should call onFiltersChange when vehicle type is changed", async () => {
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
+
+    // Open filters first
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
 
     const typeSelect = screen.getAllByRole("combobox")[2];
 
@@ -125,7 +146,13 @@ describe("Filters", () => {
 
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
 
-    const searchInput = screen.getByPlaceholderText("Search...");
+    // Open filters first
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
+
+    const searchInput = screen.getByPlaceholderText(
+      "Search by make, model, VIN, type...",
+    );
     const colorSelect = screen.getAllByRole("combobox")[0];
     const clearButton = screen.getByText("Clear all");
 
@@ -163,6 +190,10 @@ describe("Filters", () => {
 
   it("should not include 'All' values in filter params", async () => {
     render(<Filters onFiltersChange={mockOnFiltersChange} />);
+
+    // Open filters first
+    const filterButton = screen.getByText("Filters");
+    fireEvent.click(filterButton);
 
     const colorSelect = screen.getAllByRole("combobox")[0];
 

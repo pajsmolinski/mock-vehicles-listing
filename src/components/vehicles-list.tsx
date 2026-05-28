@@ -7,22 +7,29 @@ import { ListHeader } from "@/src/components/ui/listHeader";
 import { ListContainer } from "@/src/components/ui/listContainer";
 import { ListItem } from "@/src/components/ui/listItem";
 import { fetchVehicles, type FilterParams } from "@/src/services/vehicles";
+import { Pagination } from "./pagination";
+
+const ITEMS_PER_PAGE = 10;
 
 export function VehiclesList() {
   const [filters, setFilters] = useState<FilterParams>({});
+  const [sort, setSort] = useState<string>();
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: ["vehicles", filters, page],
-    queryFn: () => fetchVehicles(filters, page),
+    queryKey: ["vehicles", filters, sort, page],
+    queryFn: () => fetchVehicles(filters, sort, page, ITEMS_PER_PAGE),
   });
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans">
-      <main className="flex flex-1 w-full max-w-5xl flex-col items-center py-32 px-1 sm:items-start space-y-4">
+      <main className="flex flex-1 w-full max-w-5xl flex-col items-center pt-32 pb-12 px-1 sm:items-start space-y-4">
         <Filters onFiltersChange={setFilters} />
-        <ListHeader />
-
+        <ListHeader
+          total={data?.meta.total || 0}
+          sortBy={sort}
+          onSortChange={setSort}
+        />
         {isError && (
           <div className="flex items-center justify-center w-full py-8">
             <div className="text-red-400">
@@ -32,45 +39,45 @@ export function VehiclesList() {
           </div>
         )}
 
+        {isFetching && isLoading && (
+          <div role="status" className="self-center my-32">
+            <svg
+              aria-hidden="true"
+              className="w-8 h-8 text-slate-600  fill-blue-500 animate-spin"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+            <span className="sr-only">Loading...</span>
+          </div>
+        )}
+
         {data && (
           <>
-            {isFetching && !isLoading && (
-              <div className="w-full text-center text-slate-400 text-sm">
-                Updating...
-              </div>
-            )}
             <ListContainer>
               {data.result.map((vehicle) => (
                 <ListItem key={vehicle.id} item={vehicle} />
               ))}
             </ListContainer>
-
-            {data.meta.totalPages > 1 && (
-              <div className="flex gap-2 items-center justify-center w-full">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="px-4 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500"
-                >
-                  Previous
-                </button>
-                <span className="text-white">
-                  Page {page} of {data.meta.totalPages}
-                </span>
-                <button
-                  onClick={() =>
-                    setPage((p) => Math.min(data.meta.totalPages, p + 1))
-                  }
-                  disabled={page === data.meta.totalPages}
-                  className="px-4 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500"
-                >
-                  Next
-                </button>
-              </div>
-            )}
           </>
         )}
       </main>
+      {data && data.meta.total > ITEMS_PER_PAGE && (
+        <Pagination
+          currentPage={page}
+          totalPages={Math.ceil(data.meta.total / ITEMS_PER_PAGE)}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
