@@ -1,4 +1,4 @@
-import { Filters } from "@/components/filters";
+import { Filters } from "@/src/components/filters";
 
 export default function Home() {
   return (
