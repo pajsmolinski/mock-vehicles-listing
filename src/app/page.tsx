@@ -11,8 +11,8 @@ export default async function Home() {
 
   // Prefetch the initial data on the server
   await queryClient.prefetchQuery({
-    queryKey: ["vehicles", {}, 1],
-    queryFn: () => fetchVehicles({}, "", 1),
+    queryKey: ["vehicles", {}, undefined, 1],
+    queryFn: () => fetchVehicles({}, undefined, 1),
   });
 
   return (

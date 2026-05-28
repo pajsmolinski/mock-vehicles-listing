@@ -16,7 +16,12 @@ export function VehiclesList() {
   const [sort, setSort] = useState<string>();
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, error, isFetching } = useQuery({
+  const handleFiltersChange = (newFilters: FilterParams) => {
+    setFilters(newFilters);
+    setPage(1);
+  };
+
+  const { data, isError, error, isFetching } = useQuery({
     queryKey: ["vehicles", filters, sort, page],
     queryFn: () => fetchVehicles(filters, sort, page, ITEMS_PER_PAGE),
   });
@@ -24,9 +29,9 @@ export function VehiclesList() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans">
       <main className="flex flex-1 w-full max-w-5xl flex-col items-center pt-32 pb-12 px-1 sm:items-start space-y-4">
-        <Filters onFiltersChange={setFilters} />
+        <Filters onFiltersChange={handleFiltersChange} />
         <ListHeader
-          total={data?.meta.total || 0}
+          total={data?.meta?.total || 0}
           sortBy={sort}
           onSortChange={setSort}
         />
@@ -39,7 +44,7 @@ export function VehiclesList() {
           </div>
         )}
 
-        {isFetching && isLoading && (
+        {isFetching && (
           <div role="status" className="self-center my-32">
             <svg
               aria-hidden="true"

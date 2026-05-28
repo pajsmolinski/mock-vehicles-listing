@@ -39,6 +39,8 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  if (totalPages <= 1) return null;
+
   return (
     <div className="flex gap-2 items-center justify-center w-full flex-wrap bg-slate-900 border-slate-800 border-t pt-8 pb-16 mt-4">
       <button

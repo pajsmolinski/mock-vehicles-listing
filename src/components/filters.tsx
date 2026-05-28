@@ -29,7 +29,8 @@ export const Filters = ({ onFiltersChange }: FiltersProps) => {
       type: vehicleType !== "All" ? vehicleType : undefined,
     };
     onFiltersChange(filters);
-  }, [debouncedSearchQuery, color, fuelType, vehicleType, onFiltersChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchQuery, color, fuelType, vehicleType]);
 
   const handleClearAll = () => {
     setSearchQuery("");

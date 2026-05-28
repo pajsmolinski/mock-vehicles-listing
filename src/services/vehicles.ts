@@ -52,6 +52,7 @@ export async function fetchVehicles(
   });
 
   if (filters) {
+    // params.append("searchMode", "AND");
     if (filters.search) params.append("globalSearch", filters.search);
     if (filters.color && filters.color !== "All")
       params.append("color", filters.color);

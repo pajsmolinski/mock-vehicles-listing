@@ -3,7 +3,7 @@ import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
 interface ListHeaderProps {
   total: number;
   sortBy?: string;
-  onSortChange: (sortBy: string) => void;
+  onSortChange: (sortBy: string | undefined) => void;
 }
 
 export const ListHeader: React.FC<ListHeaderProps> = ({

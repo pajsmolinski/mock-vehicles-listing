@@ -227,7 +227,7 @@ describe("Pagination", () => {
   });
 
   it("should render correctly with single page", () => {
-    render(
+    const { container } = render(
       <Pagination
         currentPage={1}
         totalPages={1}
@@ -235,8 +235,7 @@ describe("Pagination", () => {
       />,
     );
 
-    expect(screen.getByText("Previous")).toBeDisabled();
-    expect(screen.getByText("Next")).toBeDisabled();
-    expect(screen.getByText("1")).toBeInTheDocument();
+    // Pagination should not render when there's only one page
+    expect(container).toBeEmptyDOMElement();
   });
 });
