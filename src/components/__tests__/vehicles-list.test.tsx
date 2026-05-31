@@ -23,9 +23,7 @@ jest.mock("../../services/vehicles", () => ({
 // Mock the child components
 jest.mock("../filters", () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Filters: ({ onFiltersChange }: any) => (
-    <div data-testid="filters">Filters Component</div>
-  ),
+  Filters: () => <div data-testid="filters">Filters Component</div>,
 }));
 
 jest.mock("../ui/listHeader", () => ({

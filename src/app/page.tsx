@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { VehiclesList } from "@/src/components/vehicles-list";
-import { fetchVehicles, type FilterParams } from "@/src/services/vehicles";
+import { fetchVehicles } from "@/src/services/vehicles";
 import { readUrlState, SearchParams } from "../services/urlParams";
 
 interface HomeProps {

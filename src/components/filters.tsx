@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import type { FilterParams } from "../services/vehicles";
+import { FILTERS } from "../config";
 
 interface FiltersProps {
   onFiltersChange: (filters: FilterParams) => void;
@@ -75,47 +76,57 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
       {filtersOpen && (
         <div className="p-4 rounded-lg bg-slate-950 border-slate-800 border text-white flex sm:flex-row flex-col space-y-0 space-x-0 sm:space-x-4">
           <div className="flex-1 flex flex-col space-y-2">
-            <label className="text-sm">Color</label>
+            <label htmlFor="color-filter" className="text-sm">
+              Color
+            </label>
             <select
+              id="color-filter"
               className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
               value={color}
               onChange={(e) => setColor(e.target.value)}
             >
-              <option>All</option>
-              <option>Red</option>
-              <option>Blue</option>
-              <option>Green</option>
-              <option>Yellow</option>
+              <option value="All">All</option>
+              {FILTERS.COLORS.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex-1 flex flex-col space-y-2">
-            <label className="text-sm">Fuel Type</label>
+            <label htmlFor="fuel-type-filter" className="text-sm">
+              Fuel Type
+            </label>
             <select
+              id="fuel-type-filter"
               className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
               value={fuelType}
               onChange={(e) => setFuelType(e.target.value)}
             >
-              <option>All</option>
-              <option>Gasoline</option>
-              <option>Diesel</option>
-              <option>Electric</option>
-              <option>Hybrid</option>
+              <option value="All">All</option>
+              {FILTERS.FUELS.map((fuel) => (
+                <option key={fuel} value={fuel}>
+                  {fuel}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex-1 flex flex-col space-y-2">
-            <label className="text-sm">Vehicle Type</label>
+            <label htmlFor="vehicle-type-filter" className="text-sm">
+              Vehicle Type
+            </label>
             <select
+              id="vehicle-type-filter"
               className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
             >
-              <option>All</option>
-              <option>Sedan</option>
-              <option>SUV</option>
-              <option>Hatchback</option>
-              <option>Wagon</option>
-              <option>Coupe</option>
-              <option>Van</option>
+              <option value="All">All</option>
+              {FILTERS.TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
             </select>
           </div>
         </div>

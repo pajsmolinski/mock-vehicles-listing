@@ -92,7 +92,9 @@ export async function fetchVehicles(
   }
 }
 
-export async function fetchVehicleById(id: string): Promise<Vehicle> {
+export async function fetchVehicleById(
+  id: string,
+): Promise<ApiResponse<Vehicle[]>> {
   try {
     const response = await fetch(`${API_BASE_URL}/${id}`);
 
@@ -105,7 +107,7 @@ export async function fetchVehicleById(id: string): Promise<Vehicle> {
     }
 
     const data = await response.json();
-    return data.result[0];
+    return data;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

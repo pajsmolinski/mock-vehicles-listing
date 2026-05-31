@@ -90,12 +90,12 @@ describe("Filters", () => {
 
     const colorSelect = screen.getAllByRole("combobox")[0];
 
-    fireEvent.change(colorSelect, { target: { value: "Blue" } });
+    fireEvent.change(colorSelect, { target: { value: "Black" } });
 
     await waitFor(() => {
       expect(mockOnFiltersChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          color: "Blue",
+          color: "Black",
         }),
       );
     });

@@ -1,7 +1,7 @@
 import { Vehicle } from "@/src/services/vehicles";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Thumbnail } from "./thumbnail";
 
 interface ListItemProps {
   item: Vehicle;
@@ -12,14 +12,7 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
     <div className="group overflow-hidden border bg-slate-900 border-slate-800 rounded-lg p-2 sm:p-4 transition-all hover:border-slate-500/40">
       <div className="flex flex-col lg:flex-row">
         <div className="relative lg:w-[380px]">
-          <Image
-            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400&auto=format&fit=crop"
-            alt="Jaguar"
-            width={380}
-            height={240}
-            className="h-60 w-full object-cover rounded-lg"
-            loading="eager"
-          />
+          <Thumbnail type={item.type} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
           <div className="absolute bottom-4 left-4 flex items-center gap-2">

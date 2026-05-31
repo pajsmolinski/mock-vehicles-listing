@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { PAGINATION } from "../config";
 
 interface PaginationProps {
   currentPage: number;
@@ -7,7 +8,7 @@ interface PaginationProps {
 }
 
 function getPaginationRange(currentPage: number, totalPages: number) {
-  const delta = 2; // Pages to show on each side of current page
+  const delta = PAGINATION.DELTA; // Pages to show on each side of current page
   const range: (number | string)[] = [];
   const rangeWithDots: (number | string)[] = [];
 

@@ -179,7 +179,8 @@ describe("vehicles service", () => {
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).toContain("/1");
-      expect(result).toEqual(mockVehicle);
+      expect(result).toEqual({ result: [mockVehicle] });
+      expect(result.result[0]).toEqual(mockVehicle);
     });
 
     it("should throw ApiError when vehicle is not found", async () => {
