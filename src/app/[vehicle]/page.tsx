@@ -22,7 +22,7 @@ export const generateMetadata = async ({ params }: VehiclePageProps) => {
   const { result } = data;
 
   return {
-    title: result[0].model,
+    title: `${result[0].model} - ${result[0].make}`,
     description: `Detailed information about the ${result[0].model}`,
   };
 };
