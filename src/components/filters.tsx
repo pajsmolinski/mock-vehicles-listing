@@ -4,6 +4,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   MagnifyingGlassIcon,
+  XMarkIcon,
 } from "@heroicons/react/16/solid";
 import { memo, useState } from "react";
 import type { FilterParams } from "../services/vehicles";
@@ -74,6 +75,12 @@ export const Filters = ({
     onSearchChange("");
   };
 
+  const isAnyFilterActive =
+    search.trim() !== "" ||
+    (filters.color && filters.color !== "All") ||
+    (filters.fuel && filters.fuel !== "All") ||
+    (filters.type && filters.type !== "All");
+
   return (
     <div className="flex flex-col border bg-slate-200 border-slate-300 dark:bg-slate-900 dark:border-slate-800 rounded-lg p-2 md:p-4 w-full space-y-4">
       <div className="flex space-x-4">
@@ -99,39 +106,36 @@ export const Filters = ({
             <ChevronDownIcon className="w-4 h-4 inline-block ml-1" />
           )}
         </button>
-        <button
-          className="p-2 text-slate-500 hover:text-slate-300 transition-colors"
-          onClick={handleClearAll}
-        >
-          Clear all
-        </button>
+        {isAnyFilterActive && (
+          <button
+            className="p-2 text-slate-500 hover:text-slate-300 transition-colors"
+            onClick={handleClearAll}
+          >
+            <span className="sm:inline hidden">Clear all</span>
+            <XMarkIcon className="w-4 h-4 inline-block sm:hidden"></XMarkIcon>
+          </button>
+        )}
       </div>
       {filtersOpen && (
-        <div className="p-4 rounded-lg bg-slate-100 border-slate-300 dark:bg-slate-950 dark:border-slate-800 border text-slate-900 dark:text-white flex sm:flex-row flex-col space-y-0 space-x-0 sm:space-x-4">
-          <div className="flex-1 flex flex-col space-y-2">
-            <FilterSelect
-              label="Color"
-              options={FILTERS.COLORS}
-              value={filters.color || "All"}
-              onChange={(value) => updateFilter("color", value)}
-            />
-          </div>
-          <div className="flex-1 flex flex-col space-y-2">
-            <FilterSelect
-              label="Fuel Type"
-              options={FILTERS.FUELS}
-              value={filters.fuel || "All"}
-              onChange={(value) => updateFilter("fuel", value)}
-            />
-          </div>
-          <div className="flex-1 flex flex-col space-y-2">
-            <FilterSelect
-              label="Vehicle Type"
-              options={FILTERS.TYPES}
-              value={filters.type || "All"}
-              onChange={(value) => updateFilter("type", value)}
-            />
-          </div>
+        <div className="p-4 rounded-lg bg-slate-100 border-slate-300 dark:bg-slate-950 dark:border-slate-800 border text-slate-900 dark:text-white flex sm:flex-row flex-col space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
+          <FilterSelect
+            label="Color"
+            options={FILTERS.COLORS}
+            value={filters.color || "All"}
+            onChange={(value) => updateFilter("color", value)}
+          />
+          <FilterSelect
+            label="Fuel Type"
+            options={FILTERS.FUELS}
+            value={filters.fuel || "All"}
+            onChange={(value) => updateFilter("fuel", value)}
+          />
+          <FilterSelect
+            label="Vehicle Type"
+            options={FILTERS.TYPES}
+            value={filters.type || "All"}
+            onChange={(value) => updateFilter("type", value)}
+          />
         </div>
       )}
     </div>
