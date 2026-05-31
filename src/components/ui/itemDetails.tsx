@@ -1,46 +1,39 @@
 import { Vehicle } from "@/src/services/vehicles";
+import { memo } from "react";
+import { ColorIcon } from "./colorIcon";
 
 interface ItemDetailsProps {
   vehicle: Vehicle;
 }
 
+const ItemDetailsItem: React.FC<{
+  label: string;
+  value: string | number | undefined;
+  icon?: React.ReactNode;
+}> = memo(function ItemDetailsItem({ label, value, icon }) {
+  return (
+    <div className="flex flex-col">
+      <div className="text-sm font-medium text-slate-400">{label}</div>
+      <div className="text-lg font-semibold text-slate-200 flex items-center">
+        {icon}
+        {value}
+      </div>
+    </div>
+  );
+});
+
 export const ItemDetails: React.FC<ItemDetailsProps> = ({ vehicle }) => {
   return (
     <div className="justify-between flex flex-col md:flex-row border bg-slate-900 border-slate-800 rounded-lg p-4 space-y-4 w-full">
-      <div className="flex flex-col">
-        <div className="text-sm font-medium text-slate-400">Color</div>
-        <div className="text-lg font-semibold text-slate-200">
-          <span
-            className="inline-block w-3 h-3 rounded-full mr-2"
-            style={{ backgroundColor: vehicle.color.toLowerCase() }}
-          ></span>
-          {vehicle.color}
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-sm font-medium text-slate-400">Fuel</div>
-        <div className="text-lg font-semibold text-slate-200">
-          {vehicle.fuel}
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-sm font-medium text-slate-400">Type</div>
-        <div className="text-lg font-semibold text-slate-200">
-          {vehicle.type}
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-sm font-medium text-slate-400">Year</div>
-        <div className="text-lg font-semibold text-slate-200">
-          {vehicle.year}
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-sm font-medium text-slate-400">Miles</div>
-        <div className="text-lg font-semibold text-slate-200">
-          {vehicle.miles} miles
-        </div>
-      </div>
+      <ItemDetailsItem
+        label="Color"
+        value={vehicle.color}
+        icon={<ColorIcon color={vehicle.color || "transparent"} />}
+      />
+      <ItemDetailsItem label="Fuel" value={vehicle.fuel} />
+      <ItemDetailsItem label="Type" value={vehicle.type} />
+      <ItemDetailsItem label="Year" value={vehicle.year} />
+      <ItemDetailsItem label="Miles" value={`${vehicle.miles} miles`} />
     </div>
   );
 };

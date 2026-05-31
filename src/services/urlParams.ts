@@ -6,7 +6,7 @@ export type SearchParams = {
   fuel?: string;
   type?: string;
   sort?: string;
-  page?: string;
+  page?: number;
 };
 
 export function updateUrlState(
@@ -42,7 +42,7 @@ export function readUrlState(params: SearchParams): {
   };
 
   const sort = params.sort || undefined;
-  const page = parseInt(params.page || "1", 10);
+  const page = params.page || 1;
 
   return { filters, sort, page };
 }

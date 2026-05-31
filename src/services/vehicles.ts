@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export interface Vehicle {
   id: string;
   make: string;
@@ -92,26 +94,16 @@ export async function fetchVehicles(
   }
 }
 
-export async function fetchVehicleById(
-  id: string,
-): Promise<ApiResponse<Vehicle[]>> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/${id}`);
-
-    if (!response.ok) {
-      throw new ApiError(
-        `Failed to fetch vehicle: ${response.statusText}`,
-        response.status,
-        await response.json().catch(() => null),
-      );
+export const fetchVehicleById = cache(
+  async (id: string): Promise<ApiResponse<Vehicle[]>> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}`);
+      return response.json();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError("Network error occurred", 0, error);
     }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError("Network error occurred", 0, error);
-  }
-}
+  },
+);

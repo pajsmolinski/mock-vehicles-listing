@@ -11,7 +11,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ type }) => {
   return (
     <Image
       src={image}
-      alt="Jaguar"
+      alt={type}
       width={380}
       height={240}
       className="h-60 w-full object-cover rounded-lg"

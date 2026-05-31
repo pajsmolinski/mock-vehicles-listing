@@ -1,4 +1,5 @@
 import { Vehicle } from "@/src/services/vehicles";
+import { memo } from "react";
 
 interface ItemInfoProps {
   vehicle: Vehicle;
@@ -7,12 +8,14 @@ interface ItemInfoProps {
 const ItemInfoItem: React.FC<{
   label: string;
   value: string | number | undefined;
-}> = ({ label, value }) => (
-  <div className="flex flex-col">
-    <div className="text-sm font-medium text-slate-400">{label}</div>
-    <div className="text-lg font-semibold text-slate-200">{value}</div>
-  </div>
-);
+}> = memo(function ItemInfoItem({ label, value }) {
+  return (
+    <div className="flex flex-col">
+      <div className="text-sm font-medium text-slate-400">{label}</div>
+      <div className="text-lg font-semibold text-slate-200">{value}</div>
+    </div>
+  );
+});
 
 export const ItemInfo: React.FC<ItemInfoProps> = ({ vehicle }) => {
   return (

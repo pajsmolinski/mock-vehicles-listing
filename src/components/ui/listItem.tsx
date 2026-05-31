@@ -2,6 +2,7 @@ import { Vehicle } from "@/src/services/vehicles";
 import Link from "next/link";
 import React from "react";
 import { Thumbnail } from "./thumbnail";
+import { ColorIcon } from "./colorIcon";
 
 interface ListItemProps {
   item: Vehicle;
@@ -11,9 +12,9 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
   return (
     <div className="group overflow-hidden border bg-slate-900 border-slate-800 rounded-lg p-2 sm:p-4 transition-all hover:border-slate-500/40">
       <div className="flex flex-col lg:flex-row">
-        <div className="relative lg:w-[380px]">
+        <div className="relative lg:w-95">
           <Thumbnail type={item.type} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
 
           <div className="absolute bottom-4 left-4 flex items-center gap-2">
             <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-blue-300 backdrop-blur">
@@ -46,27 +47,24 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
 
           {/* INFO */}
           <div className="mt-8 grid grid-cols-3 gap-4">
-            <div className="rounded-xl border border-slate-800 bg-white/[0.03] p-4">
+            <div className="rounded-xl border border-slate-800 bg-white/3 p-4">
               <div className="text-xs uppercase tracking-wider text-slate-500">
                 Miles
               </div>
 
               <div className="mt-2 font-medium text-white">{item.miles}</div>
             </div>
-            <div className="rounded-xl border border-slate-800 bg-white/[0.03] p-4">
+            <div className="rounded-xl border border-slate-800 bg-white/3 p-4">
               <div className="text-xs uppercase tracking-wider text-slate-500">
                 Color
               </div>
 
               <div className="mt-2 font-medium text-white flex items-center capitalize">
-                <span
-                  className="w-5 h-5 rounded-full inline-block mr-2"
-                  style={{ backgroundColor: item.color }}
-                ></span>
+                <ColorIcon color={item.color} />
                 {item.color}
               </div>
             </div>
-            <div className="rounded-xl border border-slate-800 bg-white/[0.03] p-4">
+            <div className="rounded-xl border border-slate-800 bg-white/3 p-4">
               <div className="text-xs uppercase tracking-wider text-slate-500">
                 Year
               </div>

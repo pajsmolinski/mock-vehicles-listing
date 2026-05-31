@@ -15,12 +15,26 @@ interface VehiclePageProps {
   }>;
 }
 
+export const generateMetadata = async ({ params }: VehiclePageProps) => {
+  const { vehicle } = await params;
+  const data = await fetchVehicleById(vehicle);
+
+  const { result } = data;
+
+  return {
+    title: result[0].model,
+    description: `Detailed information about the ${result[0].model}`,
+  };
+};
+
 const VehiclePage = async ({ params }: VehiclePageProps) => {
   const { vehicle } = await params;
 
   const data = await fetchVehicleById(vehicle);
 
   const { result } = data;
+
+  // set metadata based on fetched vehicle data
 
   if (!result || result.length === 0) {
     notFound();
@@ -42,7 +56,7 @@ const VehiclePage = async ({ params }: VehiclePageProps) => {
     <PageContainer>
       <ItemHeader title={result[0].model} />
       <div className="flex w-full space-x-0 md:space-x-6 flex-col md:flex-row space-y-4 md:space-y-0">
-        <div className="relative lg:w-[380px]">
+        <div className="relative lg:95">
           <Thumbnail type={result[0].type} />
         </div>
         <ItemInfo vehicle={result[0]} />
