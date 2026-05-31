@@ -8,6 +8,9 @@ const createJestConfig = nextJest({
 const config: Config = {
   coverageProvider: "v8",
   testEnvironment: "jsdom",
+  transformIgnorePatterns: [
+    "node_modules/(?!(nuqs)/)",
+  ],
 };
 
 export default createJestConfig(config);

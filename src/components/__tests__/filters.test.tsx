@@ -3,20 +3,28 @@ import {
   screen,
   fireEvent,
   waitFor,
-  act,
 } from "@testing-library/react";
 import { Filters } from "../filters";
 import "@testing-library/jest-dom";
 
 describe("Filters", () => {
   const mockOnFiltersChange = jest.fn();
+  const mockOnSearchChange = jest.fn();
+  const defaultFilters = { color: undefined, fuel: undefined, type: undefined };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should render all filter inputs", () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     expect(
       screen.getByPlaceholderText("Search by make, model, VIN, type..."),
@@ -32,7 +40,14 @@ describe("Filters", () => {
   });
 
   it("should toggle filters section when Filters button is clicked", () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     const filterButton = screen.getByText("Filters");
 
@@ -46,43 +61,34 @@ describe("Filters", () => {
     expect(screen.queryAllByRole("combobox").length).toBeGreaterThan(0);
   });
 
-  it("should call onFiltersChange with debounced search query", async () => {
-    jest.useFakeTimers();
-
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+  it("should call onSearchChange when search input changes", () => {
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     const searchInput = screen.getByPlaceholderText(
       "Search by make, model, VIN, type...",
     );
 
-    // Initial render will call with empty filters
-    expect(mockOnFiltersChange).toHaveBeenCalledTimes(1);
-    mockOnFiltersChange.mockClear();
-
     fireEvent.change(searchInput, { target: { value: "Toyota" } });
 
-    // Should not call immediately after clear
-    expect(mockOnFiltersChange).not.toHaveBeenCalled();
-
-    // Fast forward time by 500ms (debounce time)
-    await act(async () => {
-      jest.advanceTimersByTime(500);
-    });
-
-    await waitFor(() => {
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        search: "Toyota",
-        color: undefined,
-        fuel: undefined,
-        type: undefined,
-      });
-    });
-
-    jest.useRealTimers();
+    expect(mockOnSearchChange).toHaveBeenCalledWith("Toyota");
   });
 
   it("should call onFiltersChange when color is changed", async () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     // Open filters first
     const filterButton = screen.getByText("Filters");
@@ -102,7 +108,14 @@ describe("Filters", () => {
   });
 
   it("should call onFiltersChange when fuel type is changed", async () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     // Open filters first
     const filterButton = screen.getByText("Filters");
@@ -122,7 +135,14 @@ describe("Filters", () => {
   });
 
   it("should call onFiltersChange when vehicle type is changed", async () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={defaultFilters}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     // Open filters first
     const filterButton = screen.getByText("Filters");
@@ -142,54 +162,36 @@ describe("Filters", () => {
   });
 
   it("should clear all filters when Clear all button is clicked", async () => {
-    jest.useFakeTimers();
-
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
-
-    // Open filters first
-    const filterButton = screen.getByText("Filters");
-    fireEvent.click(filterButton);
-
-    const searchInput = screen.getByPlaceholderText(
-      "Search by make, model, VIN, type...",
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={{ color: "Red", fuel: "Diesel", type: "SUV" }}
+        search="Toyota"
+        onSearchChange={mockOnSearchChange}
+      />,
     );
-    const colorSelect = screen.getAllByRole("combobox")[0];
+
     const clearButton = screen.getByText("Clear all");
 
-    // Clear initial calls
-    mockOnFiltersChange.mockClear();
-
-    // Set some filters
-    fireEvent.change(searchInput, { target: { value: "Toyota" } });
-    fireEvent.change(colorSelect, { target: { value: "Blue" } });
-
-    // Clear all
     fireEvent.click(clearButton);
 
-    expect(searchInput).toHaveValue("");
-    expect(colorSelect).toHaveValue("All");
-
-    // Fast forward debounce
-    await act(async () => {
-      jest.advanceTimersByTime(500);
+    expect(mockOnSearchChange).toHaveBeenCalledWith("");
+    expect(mockOnFiltersChange).toHaveBeenCalledWith({
+      color: null,
+      fuel: null,
+      type: null,
     });
-
-    await waitFor(() => {
-      expect(mockOnFiltersChange).toHaveBeenCalledWith(
-        expect.objectContaining({
-          search: undefined,
-          color: undefined,
-          fuel: undefined,
-          type: undefined,
-        }),
-      );
-    });
-
-    jest.useRealTimers();
   });
 
   it("should not include 'All' values in filter params", async () => {
-    render(<Filters onFiltersChange={mockOnFiltersChange} />);
+    render(
+      <Filters
+        onFiltersChange={mockOnFiltersChange}
+        filters={{ color: "Red", fuel: undefined, type: undefined }}
+        search=""
+        onSearchChange={mockOnSearchChange}
+      />,
+    );
 
     // Open filters first
     const filterButton = screen.getByText("Filters");

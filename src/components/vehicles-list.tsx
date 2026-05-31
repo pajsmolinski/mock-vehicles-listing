@@ -1,54 +1,67 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Filters } from "@/src/components/filters";
 import { ListHeader } from "@/src/components/ui/listHeader";
 import { ListContainer } from "@/src/components/ui/listContainer";
 import { ListItem } from "@/src/components/ui/listItem";
 import { fetchVehicles, type FilterParams } from "@/src/services/vehicles";
 import { Pagination } from "./pagination";
-import { updateUrlState } from "../services/urlParams";
 import { PAGINATION } from "../config";
 import { PageContainer } from "./ui/pageContainer";
+import {
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+  useQueryStates,
+} from "nuqs";
+import { useDebounce } from "use-debounce";
 
 export function VehiclesList() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [filters, setFilters] = useQueryStates({
+    color: parseAsString,
+    fuel: parseAsString,
+    type: parseAsString,
+  });
 
-  const [filters, setFilters] = useState<FilterParams>(() => ({
-    search: searchParams.get("search") || undefined,
-    color: searchParams.get("color") || undefined,
-    fuel: searchParams.get("fuel") || undefined,
-    type: searchParams.get("type") || undefined,
-  }));
-  const [sort, setSort] = useState<string | undefined>(
-    searchParams.get("sort") || undefined,
-  );
-  const [page, setPage] = useState(
-    parseInt(searchParams.get("page") || "1", 10),
+  const [search, setSearch] = useQueryState(
+    "search",
+    parseAsString.withDefault(""),
   );
 
-  useEffect(() => {
-    const newUrl = updateUrlState(filters, sort, page);
-    router.replace(newUrl, { scroll: false });
-  }, [filters, sort, page, router]);
+  const [debouncedSearch] = useDebounce(search, 500);
 
-  const handleFiltersChange = useCallback((newFilters: FilterParams) => {
-    setFilters(newFilters);
-    setPage(1);
-  }, []);
+  const [sort, setSort] = useQueryState("sort", parseAsString.withDefault(""));
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  const handleSortChange = useCallback((newSort: string | undefined) => {
-    setSort(newSort);
-    setPage(1);
-  }, []);
+  const handleFiltersChange = useCallback(
+    (newFilters: FilterParams) => {
+      setFilters(newFilters);
+      setPage(1);
+    },
+    [setFilters, setPage],
+  );
+
+  const handleSortChange = useCallback(
+    (newSort: string | undefined) => {
+      setSort(newSort || "");
+      setPage(1);
+      console.log("Filters updated:", newSort);
+    },
+    [setPage, setSort],
+  );
 
   const { data, isError, error, isFetching } = useQuery({
-    queryKey: ["vehicles", filters, sort, page],
+    queryKey: ["vehicles", debouncedSearch, filters, sort, page],
     queryFn: () =>
-      fetchVehicles(filters, sort, page, PAGINATION.ITEMS_PER_PAGE),
+      fetchVehicles(
+        debouncedSearch,
+        filters,
+        sort,
+        page,
+        PAGINATION.ITEMS_PER_PAGE,
+      ),
   });
 
   return (
@@ -64,7 +77,12 @@ export function VehiclesList() {
         )
       }
     >
-      <Filters onFiltersChange={handleFiltersChange} initialFilters={filters} />
+      <Filters
+        onFiltersChange={handleFiltersChange}
+        filters={filters}
+        search={search}
+        onSearchChange={setSearch}
+      />
       <ListHeader
         total={data?.meta?.total || 0}
         sortBy={sort}

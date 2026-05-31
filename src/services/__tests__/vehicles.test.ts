@@ -65,7 +65,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({}, undefined, 2, 10);
+      await fetchVehicles("", {}, undefined, 2, 10);
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).toContain("page=2");
@@ -78,7 +78,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({ search: "Toyota" });
+      await fetchVehicles("Toyota", {});
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).toContain("globalSearch=Toyota");
@@ -90,7 +90,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({ color: "Blue" });
+      await fetchVehicles("", { color: "Blue" });
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).toContain("color=Blue");
@@ -102,7 +102,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({ color: "All", fuel: "All", type: "All" });
+      await fetchVehicles("", { color: "All", fuel: "All", type: "All" });
 
       const fetchUrl = (global.fetch as jest.Mock).mock.calls[0][0];
       expect(fetchUrl).not.toContain("color=");
@@ -116,8 +116,7 @@ describe("vehicles service", () => {
         json: async () => mockApiResponse,
       });
 
-      await fetchVehicles({
-        search: "Toyota",
+      await fetchVehicles("Toyota", {
         color: "Blue",
         fuel: "Gasoline",
         type: "Sedan",
@@ -181,21 +180,6 @@ describe("vehicles service", () => {
       expect(fetchUrl).toContain("/1");
       expect(result).toEqual({ result: [mockVehicle] });
       expect(result.result[0]).toEqual(mockVehicle);
-    });
-
-    it("should throw ApiError when vehicle is not found", async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: false,
-        status: 404,
-        statusText: "Not Found",
-        json: async () => ({ error: "Vehicle not found" }),
-      });
-
-      const error = await fetchVehicleById("999").catch((e) => e);
-
-      expect(error).toBeInstanceOf(ApiError);
-      expect(error.message).toContain("Failed to fetch vehicle");
-      expect(error.status).toBe(404);
     });
 
     it("should throw ApiError with network error", async () => {

@@ -19,9 +19,9 @@ export const ListHeader: React.FC<ListHeaderProps> = ({
       </div>
       <div className="flex items-center space-x-4">
         <div>Sort by</div>
-        <div className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white grid shrink-0 grid-cols-1 focus-within:relative">
+        <div className="p-2 rounded-lg bg-slate-200 border-slate-300 dark:bg-slate-800 dark:border-slate-700 border dark:text-white grid shrink-0 grid-cols-1 focus-within:relative">
           <select
-            className="bg-slate-800 col-start-1 row-start-1 focus:outline-none appearance-none pr-7"
+            className=" dark:bg-slate-800 col-start-1 row-start-1 focus:outline-none appearance-none pr-7"
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
           >

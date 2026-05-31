@@ -4,6 +4,28 @@ import { VehiclesList } from "../vehicles-list";
 import * as vehiclesService from "../../services/vehicles";
 import "@testing-library/jest-dom";
 
+// Mock nuqs
+jest.mock("nuqs", () => ({
+  parseAsString: {
+    withDefault: jest.fn((defaultValue) => ({ defaultValue })),
+  },
+  parseAsInteger: {
+    withDefault: jest.fn((defaultValue) => ({ defaultValue })),
+  },
+  useQueryState: jest.fn((key, options) => {
+    const defaultValue = options?.defaultValue ?? "";
+    return [defaultValue, jest.fn()];
+  }),
+  useQueryStates: jest.fn(() => [
+    {
+      color: null,
+      fuel: null,
+      type: null,
+    },
+    jest.fn(),
+  ]),
+}));
+
 // Mock Next.js navigation
 const mockReplace = jest.fn();
 const mockSearchParams = new URLSearchParams();
@@ -143,8 +165,13 @@ describe("VehiclesList", () => {
 
     await waitFor(() => {
       expect(vehiclesService.fetchVehicles).toHaveBeenCalledWith(
-        {},
-        undefined,
+        "",
+        {
+          color: null,
+          fuel: null,
+          type: null,
+        },
+        "",
         1,
         10,
       );

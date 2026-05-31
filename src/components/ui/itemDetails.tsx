@@ -14,7 +14,7 @@ const ItemDetailsItem: React.FC<{
   return (
     <div className="flex flex-col">
       <div className="text-sm font-medium text-slate-400">{label}</div>
-      <div className="text-lg font-semibold text-slate-200 flex items-center">
+      <div className="text-lg font-semibold text-slate-950 dark:text-slate-200 flex items-center">
         {icon}
         {value}
       </div>
@@ -24,7 +24,7 @@ const ItemDetailsItem: React.FC<{
 
 export const ItemDetails: React.FC<ItemDetailsProps> = ({ vehicle }) => {
   return (
-    <div className="justify-between flex flex-col md:flex-row border bg-slate-900 border-slate-800 rounded-lg p-4 space-y-4 w-full">
+    <div className="justify-between flex flex-col md:flex-row border bg-slate-200 border-slate-300 dark:bg-slate-900 dark:border-slate-800 rounded-lg p-4 space-y-4 w-full">
       <ItemDetailsItem
         label="Color"
         value={vehicle.color}

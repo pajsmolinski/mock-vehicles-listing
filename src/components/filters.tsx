@@ -5,57 +5,90 @@ import {
   ChevronUpIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/16/solid";
-import { useEffect, useState } from "react";
-import { useDebounce } from "use-debounce";
+import { memo, useState } from "react";
 import type { FilterParams } from "../services/vehicles";
 import { FILTERS } from "../config";
 
+const FilterSelect = memo(function FilterSelect({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex-1 flex flex-col space-y-2">
+      <label htmlFor={`${label}-filter`} className="text-sm">
+        {label}
+      </label>
+      <select
+        id={`${label}-filter`}
+        className="p-2 rounded-lg bg-slate-100 border-slate-300 dark:bg-slate-800 dark:border-slate-700 border text-slate-900 dark:text-white focus:outline-none"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="All">All</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+});
+
 interface FiltersProps {
   onFiltersChange: (filters: FilterParams) => void;
-  initialFilters?: FilterParams;
+  filters: FilterParams;
+  search: string;
+  onSearchChange: (search: string) => void;
 }
 
-export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
+export const Filters = ({
+  onFiltersChange,
+  filters,
+  search,
+  onSearchChange,
+}: FiltersProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(initialFilters?.search || "");
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
-  const [color, setColor] = useState(initialFilters?.color || "All");
-  const [fuelType, setFuelType] = useState(initialFilters?.fuel || "All");
-  const [vehicleType, setVehicleType] = useState(initialFilters?.type || "All");
 
-  useEffect(() => {
-    const filters: FilterParams = {
-      search: debouncedSearchQuery || undefined,
-      color: color !== "All" ? color : undefined,
-      fuel: fuelType !== "All" ? fuelType : undefined,
-      type: vehicleType !== "All" ? vehicleType : undefined,
+  const updateFilter = (key: keyof FilterParams, value: string) => {
+    const newFilters: FilterParams = {
+      ...filters,
+      [key]: value !== "All" ? value : undefined,
     };
-    onFiltersChange(filters);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchQuery, color, fuelType, vehicleType]);
+    onFiltersChange(newFilters);
+  };
 
   const handleClearAll = () => {
-    setSearchQuery("");
-    setColor("All");
-    setFuelType("All");
-    setVehicleType("All");
+    onFiltersChange({
+      color: null,
+      fuel: null,
+      type: null,
+    });
+    onSearchChange("");
   };
 
   return (
-    <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-2 md:p-4 w-full space-y-4">
+    <div className="flex flex-col border bg-slate-200 border-slate-300 dark:bg-slate-900 dark:border-slate-800 rounded-lg p-2 md:p-4 w-full space-y-4">
       <div className="flex space-x-4">
-        <div className="flex flex-1 p-2 rounded-lg bg-slate-950 border-slate-800 border items-center">
+        <div className="flex flex-1 p-2 rounded-lg bg-slate-100 border-slate-300 dark:bg-slate-950 dark:border-slate-800 border items-center">
           <MagnifyingGlassIcon className="w-6 h-6 inline-block mr-1 text-slate-500" />
           <input
             type="text"
             placeholder="Search by make, model, VIN, type..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 text-white focus:outline-none w-full"
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="flex-1 text-slate-900 dark:text-white focus:outline-none w-full"
           />
         </div>
         <button
-          className="p-2 px-4 rounded-lg bg-slate-700 cursor-pointer flex items-center"
+          className="p-2 px-4 rounded-lg bg-slate-300 dark:bg-slate-700 cursor-pointer flex items-center"
           onClick={() => setFiltersOpen(!filtersOpen)}
         >
           <AdjustmentsHorizontalIcon className="w-4 h-4 inline-block mr-1" />
@@ -74,60 +107,30 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
         </button>
       </div>
       {filtersOpen && (
-        <div className="p-4 rounded-lg bg-slate-950 border-slate-800 border text-white flex sm:flex-row flex-col space-y-0 space-x-0 sm:space-x-4">
+        <div className="p-4 rounded-lg bg-slate-100 border-slate-300 dark:bg-slate-950 dark:border-slate-800 border text-slate-900 dark:text-white flex sm:flex-row flex-col space-y-0 space-x-0 sm:space-x-4">
           <div className="flex-1 flex flex-col space-y-2">
-            <label htmlFor="color-filter" className="text-sm">
-              Color
-            </label>
-            <select
-              id="color-filter"
-              className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-            >
-              <option value="All">All</option>
-              {FILTERS.COLORS.map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
+            <FilterSelect
+              label="Color"
+              options={FILTERS.COLORS}
+              value={filters.color || "All"}
+              onChange={(value) => updateFilter("color", value)}
+            />
           </div>
           <div className="flex-1 flex flex-col space-y-2">
-            <label htmlFor="fuel-type-filter" className="text-sm">
-              Fuel Type
-            </label>
-            <select
-              id="fuel-type-filter"
-              className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
-              value={fuelType}
-              onChange={(e) => setFuelType(e.target.value)}
-            >
-              <option value="All">All</option>
-              {FILTERS.FUELS.map((fuel) => (
-                <option key={fuel} value={fuel}>
-                  {fuel}
-                </option>
-              ))}
-            </select>
+            <FilterSelect
+              label="Fuel Type"
+              options={FILTERS.FUELS}
+              value={filters.fuel || "All"}
+              onChange={(value) => updateFilter("fuel", value)}
+            />
           </div>
           <div className="flex-1 flex flex-col space-y-2">
-            <label htmlFor="vehicle-type-filter" className="text-sm">
-              Vehicle Type
-            </label>
-            <select
-              id="vehicle-type-filter"
-              className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
-              value={vehicleType}
-              onChange={(e) => setVehicleType(e.target.value)}
-            >
-              <option value="All">All</option>
-              {FILTERS.TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+            <FilterSelect
+              label="Vehicle Type"
+              options={FILTERS.TYPES}
+              value={filters.type || "All"}
+              onChange={(value) => updateFilter("type", value)}
+            />
           </div>
         </div>
       )}

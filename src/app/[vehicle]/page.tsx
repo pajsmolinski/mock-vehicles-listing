@@ -41,6 +41,7 @@ const VehiclePage = async ({ params }: VehiclePageProps) => {
   }
 
   const similarVehicles = await fetchVehicles(
+    "",
     {
       color: result[0].color,
       fuel: result[0].fuel,

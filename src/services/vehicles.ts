@@ -13,10 +13,9 @@ export interface Vehicle {
 }
 
 export interface FilterParams {
-  search?: string;
-  color?: string;
-  fuel?: string;
-  type?: string;
+  color?: string | null;
+  fuel?: string | null;
+  type?: string | null;
 }
 
 export interface ApiResponse<T> {
@@ -43,6 +42,7 @@ export class ApiError extends Error {
 }
 
 export async function fetchVehicles(
+  search?: string,
   filters?: FilterParams,
   sort?: string,
   page: number = 1,
@@ -52,7 +52,7 @@ export async function fetchVehicles(
   const params = new URLSearchParams();
 
   if (filters) {
-    if (filters.search) params.append("globalSearch", filters.search);
+    if (search) params.append("globalSearch", search);
     if (filters.color && filters.color !== "All")
       params.append("color", filters.color);
     if (filters.fuel && filters.fuel !== "All")
