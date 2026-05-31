@@ -172,7 +172,7 @@ describe("vehicles service", () => {
     it("should fetch a single vehicle by id successfully", async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockVehicle,
+        json: async () => ({ result: [mockVehicle] }),
       });
 
       const result = await fetchVehicleById("1");

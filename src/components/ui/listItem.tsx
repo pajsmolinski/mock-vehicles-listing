@@ -1,5 +1,6 @@
 import { Vehicle } from "@/src/services/vehicles";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface ListItemProps {
@@ -8,7 +9,7 @@ interface ListItemProps {
 
 export const ListItem: React.FC<ListItemProps> = ({ item }) => {
   return (
-    <div className="group overflow-hidden border bg-slate-900 border-slate-800 rounded-lg p-4 transition-all hover:border-slate-500/40">
+    <div className="group overflow-hidden border bg-slate-900 border-slate-800 rounded-lg p-2 sm:p-4 transition-all hover:border-slate-500/40">
       <div className="flex flex-col lg:flex-row">
         <div className="relative lg:w-[380px]">
           <Image
@@ -32,7 +33,7 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between p-6">
+        <div className="flex flex-1 flex-col justify-between p-0 sm:p-4 md:p-6 mt-4 md:mt-0">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <h2 className="text-3xl font-bold tracking-tight text-white">
@@ -42,9 +43,12 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
               <p className="mt-1 text-lg text-slate-400">{item.make}</p>
             </div>
 
-            <button className="rounded-xl border border-slate-800 bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10">
+            <Link
+              href={`/${item.id}`}
+              className="rounded-xl border border-slate-800 bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+            >
               View details
-            </button>
+            </Link>
           </div>
 
           {/* INFO */}

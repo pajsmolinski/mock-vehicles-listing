@@ -1,3 +1,5 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -46,9 +48,10 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="px-4 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors cursor-pointer"
+        aria-label="Previous"
+        className="px-2 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors cursor-pointer"
       >
-        Previous
+        <ChevronLeftIcon className="w-4 h-4 inline-block mr-1" />
       </button>
 
       {getPaginationRange(currentPage, totalPages).map((pageNum, idx) =>
@@ -74,9 +77,10 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors cursor-pointer"
+        aria-label="Next"
+        className="px-2 py-2 rounded-lg bg-slate-700 text-white disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors cursor-pointer"
       >
-        Next
+        <ChevronRightIcon className="w-4 h-4 inline-block ml-1" />
       </button>
     </div>
   );

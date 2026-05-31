@@ -41,7 +41,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
   };
 
   return (
-    <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-4 w-full space-y-4">
+    <div className="flex flex-col border bg-slate-900 border-slate-800 rounded-lg p-2 md:p-4 w-full space-y-4">
       <div className="flex space-x-4">
         <div className="flex flex-1 p-2 rounded-lg bg-slate-950 border-slate-800 border items-center">
           <MagnifyingGlassIcon className="w-6 h-6 inline-block mr-1 text-slate-500" />
@@ -50,7 +50,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
             placeholder="Search by make, model, VIN, type..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 text-white focus:outline-none"
+            className="flex-1 text-white focus:outline-none w-full"
           />
         </div>
         <button
@@ -58,7 +58,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
           onClick={() => setFiltersOpen(!filtersOpen)}
         >
           <AdjustmentsHorizontalIcon className="w-4 h-4 inline-block mr-1" />
-          Filters
+          <span className="sm:inline hidden">Filters</span>
           {filtersOpen ? (
             <ChevronUpIcon className="w-4 h-4 inline-block ml-1" />
           ) : (
@@ -73,7 +73,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
         </button>
       </div>
       {filtersOpen && (
-        <div className="p-4 rounded-lg bg-slate-950 border-slate-800 border text-white flex">
+        <div className="p-4 rounded-lg bg-slate-950 border-slate-800 border text-white flex sm:flex-row flex-col space-y-0 space-x-0 sm:space-x-4">
           <div className="flex-1 flex flex-col space-y-2">
             <label className="text-sm">Color</label>
             <select
@@ -88,7 +88,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
               <option>Yellow</option>
             </select>
           </div>
-          <div className="flex-1 flex flex-col space-y-2 ml-4">
+          <div className="flex-1 flex flex-col space-y-2">
             <label className="text-sm">Fuel Type</label>
             <select
               className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"
@@ -102,7 +102,7 @@ export const Filters = ({ onFiltersChange, initialFilters }: FiltersProps) => {
               <option>Hybrid</option>
             </select>
           </div>
-          <div className="flex-1 flex flex-col space-y-2 ml-4">
+          <div className="flex-1 flex flex-col space-y-2">
             <label className="text-sm">Vehicle Type</label>
             <select
               className="p-2 rounded-lg bg-slate-800 border-slate-700 border text-white focus:outline-none"

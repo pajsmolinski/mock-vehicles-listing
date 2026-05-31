@@ -40,6 +40,11 @@ export function VehiclesList() {
     setPage(1);
   }, []);
 
+  const handleSortChange = useCallback((newSort: string | undefined) => {
+    setSort(newSort);
+    setPage(1);
+  }, []);
+
   const { data, isError, error, isFetching } = useQuery({
     queryKey: ["vehicles", filters, sort, page],
     queryFn: () => fetchVehicles(filters, sort, page, ITEMS_PER_PAGE),
@@ -47,7 +52,7 @@ export function VehiclesList() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center font-sans">
-      <main className="flex flex-1 w-full max-w-5xl flex-col items-center pt-32 pb-12 px-1 sm:items-start space-y-4">
+      <main className="flex flex-1 w-full max-w-5xl flex-col items-center pt-12 md:pt-32 pb-12 px-1 sm:items-start space-y-4">
         <Filters
           onFiltersChange={handleFiltersChange}
           initialFilters={filters}
@@ -55,7 +60,7 @@ export function VehiclesList() {
         <ListHeader
           total={data?.meta?.total || 0}
           sortBy={sort}
-          onSortChange={setSort}
+          onSortChange={handleSortChange}
         />
         {isError && (
           <div className="flex items-center justify-center w-full py-8">

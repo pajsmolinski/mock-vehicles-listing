@@ -18,8 +18,10 @@ describe("Pagination", () => {
       />,
     );
 
-    expect(screen.getByText("Previous")).toBeInTheDocument();
-    expect(screen.getByText("Next")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Previous" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Next" })).toBeInTheDocument();
   });
 
   it("should disable Previous button on first page", () => {
@@ -31,7 +33,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const prevButton = screen.getByText("Previous");
+    const prevButton = screen.getByRole("button", { name: "Previous" });
     expect(prevButton).toBeDisabled();
   });
 
@@ -44,7 +46,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const nextButton = screen.getByText("Next");
+    const nextButton = screen.getByRole("button", { name: "Next" });
     expect(nextButton).toBeDisabled();
   });
 
@@ -57,7 +59,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const prevButton = screen.getByText("Previous");
+    const prevButton = screen.getByRole("button", { name: "Previous" });
     fireEvent.click(prevButton);
 
     expect(mockOnPageChange).toHaveBeenCalledWith(2);
@@ -72,7 +74,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const nextButton = screen.getByText("Next");
+    const nextButton = screen.getByRole("button", { name: "Next" });
     fireEvent.click(nextButton);
 
     expect(mockOnPageChange).toHaveBeenCalledWith(4);
@@ -197,7 +199,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const prevButton = screen.getByText("Previous");
+    const prevButton = screen.getByRole("button", { name: "Previous" });
     fireEvent.click(prevButton);
 
     // Since the button is disabled, this shouldn't call onPageChange
@@ -216,7 +218,7 @@ describe("Pagination", () => {
       />,
     );
 
-    const nextButton = screen.getByText("Next");
+    const nextButton = screen.getByRole("button", { name: "Next" });
     fireEvent.click(nextButton);
 
     // Since the button is disabled, this shouldn't call onPageChange

@@ -45,6 +45,7 @@ export async function fetchVehicles(
   sort?: string,
   page: number = 1,
   limit: number = 5,
+  searchMode: "AND" | "OR" = "AND",
 ): Promise<ApiResponse<Vehicle[]>> {
   const params = new URLSearchParams();
 
@@ -58,7 +59,7 @@ export async function fetchVehicles(
       params.append("type", filters.type);
 
     if (Array.from(params.keys()).length > 1) {
-      params.append("searchMode", "AND");
+      params.append("searchMode", searchMode);
     }
   }
 
@@ -103,7 +104,8 @@ export async function fetchVehicleById(id: string): Promise<Vehicle> {
       );
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data.result[0];
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
