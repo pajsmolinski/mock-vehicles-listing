@@ -41,6 +41,7 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
 
             <Link
               href={`/${item.id}`}
+              prefetch={false}
               className="rounded-xl border bg-slate-100 border-slate-300 dark:bg-slate-950 dark:border-slate-800 px-5 py-3 text-sm font-medium text-slate-950 dark:text-white transition hover:bg-white/10"
             >
               View details
